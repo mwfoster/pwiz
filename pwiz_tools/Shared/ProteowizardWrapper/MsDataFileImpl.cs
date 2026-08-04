@@ -2499,6 +2499,10 @@ namespace pwiz.ProteowizardWrapper
         /// nowhere useful and the chromatogram comes out empty with no error at all. Writers that
         /// present some other order do exist - one shipped peaks in ascending intensity - so the
         /// order is checked rather than trusted.
+        /// pwiz guarantees this on read now (SpectrumList_MzOrder), so for a file this class opened
+        /// there is normally nothing left to do. It stays because Skyline runs against a
+        /// pwiz_data_cli.dll that lags the pwiz tree, and because five other places build an
+        /// MsDataSpectrum from arrays that never passed a reader at all.
         /// Pass the reading file's <see cref="MzOrderVerdict"/> to have the question settled from
         /// the first few spectra instead of re-asked for every spectrum in the file. Without one
         /// every spectrum is checked, which is what a spectrum built outside a file read wants.

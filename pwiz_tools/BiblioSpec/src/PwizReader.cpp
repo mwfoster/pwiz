@@ -438,6 +438,15 @@ void PwizReader::addCharges(BiblioSpec::Spectrum& returnSpectrum,
  * and hands the raw arrays to insertPeaks, so a library built from a writer that presented some
  * other order would be stored in that order and stay that way for every consumer of the .blib.
  *
+ * pwiz guarantees this generally now, on read - see SpectrumList_MzOrder - so for an ordinary
+ * spectrum this finds nothing and settles after a handful. What it still earns its keep for is the
+ * combined ion mobility case, which pwiz deliberately leaves alone because those spectra ascend in
+ * m/z only within each mobility bin and a global sort would destroy that. BiblioSpec wants them
+ * flattened: SpectrumInfo::data has no mobility axis to lose, and binPeaks() merges a peak into the
+ * previous bin only when the two are adjacent in the array, so bin-concatenated input leaves
+ * same-bin peaks unmerged. openFile() reads with combineIonMobilitySpectra on, so this is the
+ * common case here rather than an exotic one.
+ *
  * The question is settled from the first few spectra of the file rather than re-asked for every
  * spectrum, since walking every m/z array of every file to catch the rare writer that does not sort
  * is a cost the whole world pays for the few. The first spectrum alone will not do: early scans can

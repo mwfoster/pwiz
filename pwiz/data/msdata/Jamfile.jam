@@ -54,6 +54,7 @@ lib pwiz_data_msdata_core
         Serializer_mzML.cpp
         SpectrumInfo.cpp
         SpectrumIterator.cpp
+        SpectrumList_MzOrder.cpp
         SpectrumList_mzML.cpp
         SpectrumListBase.cpp
         SpectrumListCache.cpp
@@ -130,6 +131,7 @@ lib pwiz_data_msdata_examples
 unit-test-if-exists MSDataTest : MSDataTest.cpp pwiz_data_msdata ; # MSData.cpp cv.cpp ;
 unit-test-if-exists LegacyAdapterTest : LegacyAdapterTest.cpp pwiz_data_msdata ; # LegacyAdapter.cpp CVTranslator.cpp MSData.cpp cv.cpp ;
 unit-test-if-exists SpectrumIteratorTest : SpectrumIteratorTest.cpp pwiz_data_msdata ; # SpectrumIterator.cpp MSData.cpp cv.cpp ../util ;
+unit-test-if-exists SpectrumList_MzOrderTest : SpectrumList_MzOrderTest.cpp pwiz_data_msdata ;
 unit-test-if-exists DiffTest : DiffTest.cpp pwiz_data_msdata_examples ; # Diff.cpp MSData.cpp cv.cpp ;
 unit-test-if-exists MSDataMergerTest : MSDataMergerTest.cpp pwiz_data_msdata pwiz_data_msdata_examples ;
 unit-test-if-exists ReferencesTest : ReferencesTest.cpp pwiz_data_msdata ; # References.cpp MSData.cpp cv.cpp ;

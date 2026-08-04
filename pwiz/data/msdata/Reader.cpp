@@ -24,6 +24,7 @@
 #define PWIZ_SOURCE
 
 #include "Reader.hpp"
+#include "SpectrumList_MzOrder.hpp"
 #include "pwiz/utility/misc/Filesystem.hpp"
 #include "pwiz/utility/misc/Std.hpp"
 
@@ -33,6 +34,22 @@ namespace msdata {
 
 
 using namespace pwiz::util;
+
+
+namespace {
+
+/// Guarantee ascending m/z to everything downstream, whatever order the writer used - see
+/// SpectrumList_MzOrder. This is deliberately the last thing done to a freshly read file and
+/// must stay that way: the vendor readers each dynamic_cast run.spectrumListPtr back to their
+/// own concrete list inside read(), and References::resolve() casts it to SpectrumListSimple,
+/// so wrapping any earlier would silently turn those lookups into no-ops.
+void ensureMzOrder(MSData& msd)
+{
+    if (msd.run.spectrumListPtr.get())
+        msd.run.spectrumListPtr.reset(new SpectrumList_MzOrder(msd.run.spectrumListPtr));
+}
+
+} // namespace
 
 
 
@@ -135,6 +152,7 @@ PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, 
         if ((*it)->accept(filename, head))
         {
             (*it)->read(filename, head, result, sampleIndex, config);
+            ensureMzOrder(result);
             return;
         }
     throw ReaderFail((" don't know how to read " +
@@ -156,6 +174,9 @@ PWIZ_API_DECL void ReaderList::read(const string& filename, const string& head, 
         if ((*it)->accept(filename, head))
         {
             (*it)->read(filename, head, results, config);
+            for (vector<MSDataPtr>::const_iterator result=results.begin(); result!=results.end(); ++result)
+                if (result->get())
+                    ensureMzOrder(**result);
             return;
         }
     throw ReaderFail((" don't know how to read " +
